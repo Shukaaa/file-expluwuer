@@ -84,28 +84,29 @@ func run(config services.Configuration) {
 		}
 
 		if utils.IsAllowedExtension(config.AllowedExtensions, ext) {
+			icon := "📄"
+
 			switch {
 			case utils.IsArchiveExtension(ext):
-				fmt.Println("📦 " + file.Name())
+				icon = "📦"
 
 			case utils.IsAudioExtension(ext):
-				fmt.Println("🎵 " + file.Name())
+				icon = "🎵"
 
 			case utils.IsExecutableExtension(ext):
-				fmt.Println("🚀 " + file.Name())
+				icon = "🚀"
 
 			case utils.IsFontExtension(ext):
-				fmt.Println("🔤 " + file.Name())
+				icon = "🔤"
 
 			case utils.IsImageExtension(ext):
-				fmt.Println("🖼️ " + file.Name())
+				icon = "🖼️ "
 
 			case utils.IsVideoExtension(ext):
-				fmt.Println("🎥 " + file.Name())
-
-			default:
-				fmt.Println("📄 " + file.Name())
+				icon = "🎥"
 			}
+
+			fmt.Println(icon + " [" + utils.CalculateSize(file.Size()) + "] " + file.Name())
 		}
 	}
 }
