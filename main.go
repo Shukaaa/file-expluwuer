@@ -34,6 +34,7 @@ func printInfoText(config services.Configuration) {
 	fmt.Println("Directory: " + config.Directory)
 	fmt.Println("ShowDir: " + strconv.FormatBool(config.ShowDir))
 	fmt.Println("AllowedExtensions: " + strings.Join(config.AllowedExtensions, ", "))
+	fmt.Println("BlacklistedExtensions: " + strings.Join(config.BlacklistedExtensions, ", "))
 	fmt.Println("################################\n\nFiles:")
 }
 
@@ -76,8 +77,35 @@ func run(config services.Configuration) {
 			continue
 		}
 
-		if utils.IsAllowedExtension(config.AllowedExtensions, filepath.Ext(file.Name())[1:]) {
-			fmt.Println("📄 " + file.Name())
+		ext := filepath.Ext(file.Name())[1:]
+
+		if utils.IsBlacklistedExtension(config.BlacklistedExtensions, ext) {
+			continue
+		}
+
+		if utils.IsAllowedExtension(config.AllowedExtensions, ext) {
+			switch {
+			case utils.IsArchiveExtension(ext):
+				fmt.Println("📦 " + file.Name())
+
+			case utils.IsAudioExtension(ext):
+				fmt.Println("🎵 " + file.Name())
+
+			case utils.IsExecutableExtension(ext):
+				fmt.Println("🚀 " + file.Name())
+
+			case utils.IsFontExtension(ext):
+				fmt.Println("🔤 " + file.Name())
+
+			case utils.IsImageExtension(ext):
+				fmt.Println("🖼️ " + file.Name())
+
+			case utils.IsVideoExtension(ext):
+				fmt.Println("🎥 " + file.Name())
+
+			default:
+				fmt.Println("📄 " + file.Name())
+			}
 		}
 	}
 }
