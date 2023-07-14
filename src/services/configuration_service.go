@@ -2,11 +2,13 @@ package services
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
 
 type Configuration struct {
+	FirstAction           bool
 	Directory             string
 	ShowDir               bool
 	AllowedExtensions     []string
@@ -15,6 +17,7 @@ type Configuration struct {
 
 func GetConfiguration() (Configuration, error) {
 	configuration := Configuration{
+		FirstAction:           true,
 		Directory:             "",
 		ShowDir:               true,
 		AllowedExtensions:     []string{"*"},
@@ -24,7 +27,14 @@ func GetConfiguration() (Configuration, error) {
 	for _, arg := range os.Args {
 		switch {
 		case strings.HasPrefix(arg, "dir="):
-			configuration.Directory = strings.Split(arg, "=")[1]
+			directory := strings.Split(arg, "=")[1]
+
+			absPath, err := filepath.Abs(directory)
+			if err != nil {
+				return configuration, err
+			}
+
+			configuration.Directory = absPath
 
 		case strings.HasPrefix(arg, "showDir="):
 			boolValue, err := strconv.ParseBool(strings.Split(arg, "=")[1])
