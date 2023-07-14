@@ -86,6 +86,11 @@ func start(configuration services.Configuration) {
 		start(configuration)
 		return
 	}
+
+	// If nothing else, it's a file
+
+	cmd := exec.Command(`explorer`, `/select,`, configuration.Directory+choice)
+	cmd.Run()
 }
 
 func printInfoText(config services.Configuration) {
